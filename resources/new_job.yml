@@ -1,0 +1,54 @@
+bundle:
+  name: new_bundle
+
+resources:
+  jobs:
+    'new_sample_job':
+      name: 'new_sample_job'
+      tasks:
+        - task_key: notebook_task1
+          email_notifications: {}
+          environment_key: default
+          notebook_task:
+            notebook_path: ../src/CreateFirstTable.ipynb
+            source: WORKSPACE
+          run_if: ALL_SUCCESS
+          timeout_seconds: 0
+        - task_key: notebook_task2
+          depends_on:
+            - task_key: notebook_task1
+          email_notifications: {}
+          environment_key: default
+          notebook_task:
+            notebook_path: ../src/CreateSecondTable.ipynb
+            source: WORKSPACE
+          run_if: ALL_SUCCESS
+          timeout_seconds: 0
+      parameters:
+        - name: catalog
+          default: workspace
+        - name: schema
+          default: default
+      deployment:
+        kind: BUNDLE
+        metadata_file_path: ~/.bundle/${bundle.name}/${bundle.target}/state/metadata.json
+      edit_mode: UI_LOCKED
+      email_notifications: {}
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "4"
+      max_concurrent_runs: 1
+      queue:
+        enabled: true
+      run_as:
+        user_name: riccardo.9giuliani.6@gmail.com
+      tags:
+        "dev": "riccardo_9giuliani_6"
+      timeout_seconds: 0
+      trigger:
+        pause_status: PAUSED
+        periodic:
+          interval: 1
+          unit: DAYS
+      webhook_notifications: {}

@@ -18,7 +18,5 @@ jobs:
     steps:
       - name: Print environment variables
         run: |
-          response=$(curl --request POST --url ${{ vars.HOST }}'/oidc/v1/token' \ 
-                            --user ${{ secrets.CLIENT_ID }}:${{ secrets.CLIENT_SECRET }} \
-                            --data 'grant_type=client_credentials&scope=all-apis')
+          response=$(curl --request POST --url ${{ vars.HOST }}'/oidc/v1/token' --user ${{ secrets.CLIENT_ID }}:${{ secrets.CLIENT_SECRET }} --data 'grant_type=client_credentials&scope=all-apis')
           echo $response

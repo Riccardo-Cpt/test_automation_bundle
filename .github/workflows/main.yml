@@ -16,4 +16,4 @@ jobs:
     environment: dev
     steps:
       - name: Print environment variables
-        run: echo "${{ vars.HOST }}, ${{ vars.CATALOG }},  ${{ vars.SCHEMA }}"
+        run: echo "${{ vars.HOST }}, ${{ vars.CATALOG }},  ${{ vars.SCHEMA }}, ${{ github.event.inputs.environment }}"

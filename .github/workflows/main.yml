@@ -1,0 +1,26 @@
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to run against'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - prod
+
+env:
+  # Default values (optional, can be overridden by environment)
+  SCHEMA: ""
+  CATALOG: ""
+
+jobs:
+  get-sp-oauth-token:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    steps:
+      - name: Print environment variables
+        run: |
+          echo "SCHEMA: ${{ env.SCHEMA }}"
+          echo "CATALOG: ${{ env.CATALOG }}"

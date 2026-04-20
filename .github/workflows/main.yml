@@ -15,4 +15,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Print environment variables
-        run: echo "${{ env.DAY_OF_WEEK }}"
+        run: echo "${{ env.CATALOG }}"

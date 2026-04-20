@@ -12,7 +12,7 @@ on:
 
 env:
   # Default values (optional, can be overridden by environment)
-  SCHEMA: ""
+  SCHEMA: "D"
   CATALOG: ""
 
 jobs:
@@ -24,3 +24,4 @@ jobs:
         run: |
           echo "SCHEMA: ${{ env.SCHEMA }}"
           echo "CATALOG: ${{ env.CATALOG }}"
+          echo "CATALOG: ${{ env.HOST }}"

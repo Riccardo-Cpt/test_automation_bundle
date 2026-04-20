@@ -15,4 +15,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Print environment variables
-        run: echo "${{ vars.HOST }}"
+        run: echo "${{ vars.HOST }}, ${{ vars.CATALOG }},  ${{ vars.SCHEMA }}"

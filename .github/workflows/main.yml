@@ -10,18 +10,10 @@ on:
           - dev
           - prod
 
-env:
-  # Default values (optional, can be overridden by environment)
-  SCHEMA: "D"
-  CATALOG: ""
-
 jobs:
   get-sp-oauth-token:
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment }}
     steps:
       - name: Print environment variables
-        run: |
-          echo "SCHEMA: ${{ env.SCHEMA }}"
-          echo "CATALOG: ${{ env.CATALOG }}"
-          echo "CATALOG: ${{ env.HOST }}"
+        run: env

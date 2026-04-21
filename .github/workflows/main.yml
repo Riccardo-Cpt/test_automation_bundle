@@ -15,6 +15,11 @@ on:
         options:
           - dev
           - prod
+          
+permissions:
+  # These permissions are required for workload identity federation.
+  id-token: write
+  contents: read
 
 jobs:
   get-sp-oauth-token:
@@ -52,7 +57,7 @@ jobs:
 
       # Deploy the bundle to the target environment as defined by user input
       # in the bundle's settings file.
-      - run: databricks bundle deploy
+      - run: databricks bundle deploy -t ${{ github.event.inputs.environment }}
         working-directory: .
         env:
           DATABRICKS_TOKEN: ${{ env.OAUTH_TOKEN }}

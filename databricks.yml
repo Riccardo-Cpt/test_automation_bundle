@@ -4,6 +4,9 @@ bundle:
   name: new_job
   uuid: ba87bc70-23dd-4a44-b389-f868cfd5ee04
 
+run as:
+  service_principal_name: '71177765-27d4-40e0-abd6-b589ac8e7c0e'
+
 include:
   - resources/*.yml
 

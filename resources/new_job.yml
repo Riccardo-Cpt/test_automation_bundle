@@ -45,7 +45,7 @@ resources:
       queue:
         enabled: true
       tags:
-        "dev": "riccardo_9giuliani_6"
+        "env": "dev"
       timeout_seconds: 0
       trigger:
         pause_status: PAUSED

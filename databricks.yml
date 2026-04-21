@@ -31,6 +31,8 @@ targets:
     permissions:
           - user_name: riccardo.9giuliani.6@gmail.com
             level: CAN_MANAGE
+          - service_principal_name: 'test_bundle_sp'
+            level: CAN_RUN
   prod:
     mode: production
     workspace:

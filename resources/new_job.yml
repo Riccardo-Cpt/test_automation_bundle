@@ -1,8 +1,8 @@
 bundle:
   name: new_bundle
 
-run_as:
-  service_principal_name: '71177765-27d4-40e0-abd6-b589ac8e7c0e'
+#run_as:
+#  service_principal_name: '71177765-27d4-40e0-abd6-b589ac8e7c0e'
 
 resources:
   jobs:

@@ -45,7 +45,7 @@ resources:
       queue:
         enabled: true
       tags:
-        "env": "dev"
+        "env": ${bundle.target}
       timeout_seconds: 0
       trigger:
         pause_status: PAUSED

@@ -40,7 +40,7 @@ jobs:
         id: get_token
         uses: actions/get-id-token@v1
         with:
-          audience: https://dbc-5f048565-f44c.cloud.databricks.com/oidc/v1/token
+          audience: ${{ vars.HOST }}/oidc/v1/token
 
       - run: databricks repos update /Workspace/Users/riccardo.9giuliani.6@gmail.com/test_automation_bundle --tag v0.1
 

@@ -44,8 +44,12 @@ jobs:
   # Bundle validation is automatically performed as part of this deployment.
   # If validation fails, this workflow fails.
   deploy:
-    name: 'Deploy bundle'
+    name: 'Update git folder'
     runs-on: ubuntu-latest
+    env:
+      DATABRICKS_AUTH_TYPE: github-oidc
+      DATABRICKS_HOST: ${{ vars.HOST }}
+      DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
 
     steps:
       # Check out this repo, so that this workflow can access it.
@@ -57,10 +61,9 @@ jobs:
 
       # Deploy the bundle to the target environment as defined by user input
       # in the bundle's settings file.
-      - run: databricks bundle deploy -t ${{ github.event.inputs.environment }}
-        working-directory: .
-        env:
-          DATABRICKS_TOKEN: ${{ env.OAUTH_TOKEN }}
-          DATABRICKS_BUNDLE_ENV: ${{ github.event.inputs.environment }}
+      - run: databricks repos update /Workspace/Users/riccardo.9giuliani.6@gmail.com/test_automation_bundle --tag v0.1
+
+
+
     
     

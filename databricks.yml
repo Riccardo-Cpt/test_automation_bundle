@@ -32,7 +32,7 @@ targets:
           - user_name: riccardo.9giuliani.6@gmail.com
             level: CAN_MANAGE
           - service_principal_name: '71177765-27d4-40e0-abd6-b589ac8e7c0e'
-            level: CAN_RUN
+            level: CAN_MANAGE
   prod:
     mode: production
     workspace:
@@ -42,3 +42,6 @@ targets:
     variables:
       catalog: username2_stage
       schema: prod
+    permissions:
+          - user_name: riccardo.9giuliani.6@gmail.com
+            level: CAN_MANAGE

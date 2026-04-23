@@ -16,12 +16,8 @@ on:
           - dev
           - prod
           
-permissions:
-  # These permissions are required for workload identity federation.
-  id-token: write
-  contents: read
-
 jobs:
+  # This first job obtains OICD OAUTH token for service principal through API
   get-sp-oauth-token:
     name: 'CI/CD pipeline'
     runs-on: ubuntu-latest
@@ -38,6 +34,7 @@ jobs:
           
   # Bundle validation is automatically performed as part of this deployment.
   # If validation fails, this workflow fails.
+  # This second job deploy the bundle directly to databricks workspace, authenticating with token previously obtained
   deploy:
     name: 'Deploy bundle'
     runs-on: ubuntu-latest

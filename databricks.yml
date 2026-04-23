@@ -13,6 +13,8 @@ variables:
     description: The catalog to use
   schema:
     description: The schema to use
+  CLIENT_ID:
+    description: The client id of the service principal to use for deployment and job runs
 
 targets:
   dev:
@@ -31,7 +33,7 @@ targets:
     permissions:
           - user_name: riccardo.9giuliani.6@gmail.com
             level: CAN_MANAGE
-          - service_principal_name: '71177765-27d4-40e0-abd6-b589ac8e7c0e'
+          - service_principal_name: ${var.CLIENT_ID}
             level: CAN_MANAGE
   prod:
     mode: production
@@ -43,5 +45,5 @@ targets:
       catalog: username2_stage
       schema: prod
     permissions:
-          - service_principal_name: '71177765-27d4-40e0-abd6-b589ac8e7c0e'
+          - service_principal_name: ${var.CLIENT_ID}
             level: CAN_MANAGE

@@ -21,23 +21,19 @@ permissions:
   id-token: write
   contents: read
 
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
     name: 'Update git folder'
-    environment: ${{ github.event.inputs.environment }}
-    env:
-      DATABRICKS_AUTH_TYPE: github-oidc
-      DATABRICKS_HOST: ${{ vars.HOST }}
-      DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }} # This is the service principal UUID.
-
     steps:
       - uses: actions/checkout@v3
       - uses: databricks/setup-cli@main
-      - name: Update git folder
-        # Set your workspace path and branch name here
-        run: databricks repos update /Workspace/Users/riccardo.9giuliani.6@gmail.com/test_automation_bundle --branch master
+      - name: Deploy Databricks Asset Bundle
+        run: |
+          databricks bundle deploy -t dev
+        env:
+          DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          DATABRICKS_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
 
 
     

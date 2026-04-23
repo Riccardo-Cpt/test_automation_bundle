@@ -16,7 +16,7 @@ on:
           - dev
           - prod
       tag:
-        description: 'Test scenario tags'
+        description: 'The Git tag to deploy (e.g., v1.0.0)'
         required: true
         type: string
        
@@ -47,6 +47,8 @@ jobs:
     steps:
       # Check out this repo, so that this workflow can access it.
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag }}
 
       # Download the Databricks CLI.
       # See https://github.com/databricks/setup-cli

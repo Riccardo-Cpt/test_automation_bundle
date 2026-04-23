@@ -28,40 +28,36 @@ jobs:
      # Configure current environment
     environment: ${{ github.event.inputs.environment }}
     outputs:
-      version_number: ${{ steps.vars.outputs.OAUTH_TOKEN }}
+      databricks_token_sp: ${{ steps.get_token.outputs.OAUTH_TOKEN }}
     steps:
       - name: Get Oath token with rest api
-        id: vars
+        id: get_token
         run: |
           RESPONSE=$(curl --request POST --url ${{ vars.HOST }}'/oidc/v1/token' --user ${{ secrets.CLIENT_ID }}:${{ secrets.CLIENT_SECRET }} --data 'grant_type=client_credentials&scope=all-apis')
           OAUTH_TOKEN=$(echo $response | jq -r '.access_token')
-
-      - name: store token into env variable
-        run: echo "saving oath token into env variable"
-        env:  
-          OAUTH_TOKEN: ${{ steps.vars.outputs.OAUTH_TOKEN }}
           
   # Bundle validation is automatically performed as part of this deployment.
   # If validation fails, this workflow fails.
   deploy:
-    name: 'Update git folder'
+    name: 'Deploy bundle'
     runs-on: ubuntu-latest
-    env:
-      DATABRICKS_AUTH_TYPE: github-oidc
-      DATABRICKS_HOST: ${{ vars.HOST }}
-      DATABRICKS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
-
+    needs: get-sp-oauth-token
     steps:
       # Check out this repo, so that this workflow can access it.
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       # Download the Databricks CLI.
       # See https://github.com/databricks/setup-cli
       - uses: databricks/setup-cli@main
 
-      # Deploy the bundle to the target environment as defined by user input
+      # Deploy the bundle to the "dev" target as defined
       # in the bundle's settings file.
-      - run: databricks repos update /Workspace/Users/riccardo.9giuliani.6@gmail.com/test_automation_bundle --tag v0.1
+      - run: databricks bundle deploy
+        working-directory: .
+        env:
+          DATABRICKS_TOKEN: ${{needs.get-sp-oauth-token.outputs.databricks_token_sp}}
+          DATABRICKS_BUNDLE_ENV: ${{ github.event.inputs.environment }}
+
 
 
 

@@ -62,20 +62,24 @@ jobs:
           DATABRICKS_TOKEN: ${{needs.get-sp-oauth-token.outputs.databricks_token_sp}}
           DATABRICKS_BUNDLE_ENV: ${{ github.event.inputs.environment }}
 
-    update-repo:
-      name: 'Update dbx repo'
-      runs-on: ubuntu-latest
-      needs: deploy
-      steps:
-        # Check out this repo, so that this workflow can access it.
-        - uses: actions/checkout@v4
+  update-repo:
+    name: 'Update dbx repo'
+    runs-on: ubuntu-latest
+    needs: get-sp-oauth-token
+    steps:
+      # Check out this repo, so that this workflow can access it.
+      - uses: actions/checkout@v4
   
-        # Download the Databricks CLI.
-        # See https://github.com/databricks/setup-cli
-        - uses: databricks/setup-cli@main
+      # Download the Databricks CLI.
+      # See https://github.com/databricks/setup-cli
+      - uses: databricks/setup-cli@main
   
-        # Update databricks repo with specified tag
-        - run databricks repos update 4436606296878746 --tag ${{ github.event.inputs.tag }}
+      # Update databricks repo with specified tag
+      - run: databricks repos update 4436606296878746 --tag ${{ github.event.inputs.tag }}
+        working-directory: .
+        env:
+          DATABRICKS_TOKEN: ${{ needs.get-sp-oauth-token.outputs.databricks_token_sp }}
+          DATABRICKS_BUNDLE_ENV: ${{ github.event.inputs.environment }}
 
 
       

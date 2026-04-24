@@ -53,13 +53,14 @@ jobs:
       - uses: actions/download-artifact@v8
         with:
           name: oauth-sp-token-path
-          path: ./token.txt
+          path: ./
       - name: read-token
         run: cat ./token.txt
        #working-directory: .
          #env:
           #DATABRICKS_TOKEN: $(cat ./token.txt)
           #DATABRICKS_BUNDLE_ENV: $databricks_oauth_sp_token
+
   
   # Bundle validation is automatically performed as part of this deployment.
   # If validation fails, this workflow fails.

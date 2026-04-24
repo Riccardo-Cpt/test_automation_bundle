@@ -30,8 +30,7 @@ jobs:
         id: get_token
         run: |
           RESPONSE=$(curl --request POST --url ${{ vars.HOST }}'/oidc/v1/token' --user ${{ secrets.CLIENT_ID }}:${{ secrets.CLIENT_SECRET }} --data 'grant_type=client_credentials&scope=all-apis')
-          OAUTH_TOKEN=$(echo $RESPONSE | jq -r '.access_token')
-          echo "OAUTH_TOKEN_SP=$OAUTH_TOKEN" >> "$GITHUB_OUTPUT"
+          run: echo "::set-output name=OAUTH_TOKEN_SP::$(echo $RESPONSE | jq -r '.access_token')"
           
   build:
     name: 'Build repo'

@@ -30,7 +30,7 @@ jobs:
         id: get_token
         run: |
           RESPONSE=$(curl --request POST --url ${{ vars.HOST }}'/oidc/v1/token' --user ${{ secrets.CLIENT_ID }}:${{ secrets.CLIENT_SECRET }} --data 'grant_type=client_credentials&scope=all-apis')
-          echo "$(echo $RESPONSE | jq -r '.access_token')" > token.txt
+          echo "$(echo $RESPONSE | jq -r '.access_token')" > ./token.txt
           
   build:
     name: 'Build repo'
@@ -49,13 +49,15 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: databricks-token
+          path: ./token.txt
+          retention-days: 1
   
       # Update databricks repo with specified tag
       - run: |
               databricks repos update 4436606296878746
         working-directory: .
         env:
-          DATABRICKS_TOKEN: $(cat token.txt)
+          DATABRICKS_TOKEN: $(cat ./token.txt)
           DATABRICKS_BUNDLE_ENV: $databricks_oauth_sp_token
   
   # Bundle validation is automatically performed as part of this deployment.

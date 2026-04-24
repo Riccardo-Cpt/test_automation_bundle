@@ -15,33 +15,12 @@ on:
         options:
           - dev
           - prod
-      tag:
-        description: 'The Git tag to deploy (e.g., v1.0.0)'
-        required: true
-        type: string
        
 jobs:
-  check-tag:
-      name: 'Check user tag input'
-      #check if user input tag actually exists
-      runs-on: ubuntu-latest
-      # In check-tag job, add checkout as first step:
-      steps:
-        - uses: actions/checkout@v4
-          with:
-            fetch-depth: 0   # Fetch all history
-            fetch-tags: true # Ensure tags are fetched (supported in checkout@v4)
-        - name: "Check if input tag exists"
-          id: check_tag
-          run: |
-            if ! git show-ref --tags ${{ github.event.inputs.tag }} >/dev/null 2>&1; then echo "Error: Tag ${{ github.event.inputs.tag }} does not exist."; exit 1; else echo "Check tag succeeded"; fi
-          shell: bash
-
   # This first job obtains OICD OAUTH token for service principal through API
   get-sp-oauth-token:
-    name: 'CI/CD pipeline'
+    name: 'Get Oauth token for service principal'
     runs-on: ubuntu-latest
-    needs: check-tag
     # Configure current environment
     environment: ${{ github.event.inputs.environment }}
     outputs:
@@ -53,33 +32,8 @@ jobs:
           RESPONSE=$(curl --request POST --url ${{ vars.HOST }}'/oidc/v1/token' --user ${{ secrets.CLIENT_ID }}:${{ secrets.CLIENT_SECRET }} --data 'grant_type=client_credentials&scope=all-apis')
           OAUTH_TOKEN=$(echo $RESPONSE | jq -r '.access_token')
           
-  # Bundle validation is automatically performed as part of this deployment.
-  # If validation fails, this workflow fails.
-  # This second job deploy the bundle directly to databricks workspace, authenticating with token previously obtained
-  deploy:
-    name: 'Deploy bundle'
-    runs-on: ubuntu-latest
-    needs: get-sp-oauth-token
-    steps:
-      # Check out this repo, so that this workflow can access it.
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.inputs.tag }}
-
-      # Download the Databricks CLI.
-      # See https://github.com/databricks/setup-cli
-      - uses: databricks/setup-cli@main
-
-      # Deploy the bundle to the target as defined
-      # in the bundle's settings file.
-      - run: databricks bundle deploy 
-        working-directory: .
-        env:
-          DATABRICKS_TOKEN: ${{needs.get-sp-oauth-token.outputs.databricks_token_sp}}
-          DATABRICKS_BUNDLE_ENV: ${{ github.event.inputs.environment }}
-
-  update-repo:
-    name: 'Update dbx repo'
+  build:
+    name: 'Build repo'
     runs-on: ubuntu-latest
     needs: get-sp-oauth-token
     steps:
@@ -91,10 +45,34 @@ jobs:
       - uses: databricks/setup-cli@main
   
       # Update databricks repo with specified tag
-      - run: databricks repos update 4436606296878746 --tag ${{ github.event.inputs.tag }}
+      - run: databricks repos update 4436606296878746
         working-directory: .
         env:
           DATABRICKS_TOKEN: ${{ needs.get-sp-oauth-token.outputs.databricks_token_sp }}
+          DATABRICKS_BUNDLE_ENV: ${{ github.event.inputs.environment }}
+
+  
+  # Bundle validation is automatically performed as part of this deployment.
+  # If validation fails, this workflow fails.
+  # This second job deploy the bundle directly to databricks workspace, authenticating with token previously obtained
+  deploy:
+    name: 'Deploy bundle'
+    runs-on: ubuntu-latest
+    needs: [build, get-sp-oauth-token]
+    steps:
+      # Check out this repo, so that this workflow can access it.
+      - uses: actions/checkout@v4
+
+      # Download the Databricks CLI.
+      # See https://github.com/databricks/setup-cli
+      - uses: databricks/setup-cli@main
+
+      # Deploy the bundle to the target as defined
+      # in the bundle's settings file.
+      - run: databricks bundle deploy 
+        working-directory: .
+        env:
+          DATABRICKS_TOKEN: ${{needs.get-sp-oauth-token.outputs.databricks_token_sp}}
           DATABRICKS_BUNDLE_ENV: ${{ github.event.inputs.environment }}
 
 

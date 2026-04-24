@@ -51,7 +51,7 @@ jobs:
       # Download the token artifact
       - uses: actions/download-artifact@v8
         with:
-          name: read-oauth-sp-token
+          name: oauth-sp-token-path
           path: ./token.txt
           retention-days: 1
       - name: read-token

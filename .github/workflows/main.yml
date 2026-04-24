@@ -59,7 +59,7 @@ jobs:
         working-directory: .
         env:
           DATABRICKS_TOKEN: $(cat ./token.txt)
-          DATABRICKS_BUNDLE_ENV: $databricks_oauth_sp_token
+          DATABRICKS_BUNDLE_ENV: ${{ github.event.inputs.environment }}
 
   
   # Bundle validation is automatically performed as part of this deployment.

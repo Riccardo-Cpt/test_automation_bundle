@@ -49,7 +49,7 @@ jobs:
           name: oauth-sp-token-path
           path: ./
       - name: Export token from file to env
-        run: echo "DATABRICKS_TOKEN=$(cat ./token.txt)" >> $GITHUB_ENV
+        run: export "DATABRICKS_TOKEN=$(cat ./token.txt)" >> $GITHUB_ENV
       - run: databricks repos update 4436606296878746
         working-directory: .
         env:

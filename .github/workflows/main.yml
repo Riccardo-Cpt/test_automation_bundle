@@ -30,7 +30,7 @@ jobs:
         id: get_token
         run: |
           RESPONSE=$(curl --request POST --url ${{ vars.HOST }}'/oidc/v1/token' --user ${{ secrets.CLIENT_ID }}:${{ secrets.CLIENT_SECRET }} --data 'grant_type=client_credentials&scope=all-apis')
-          run: echo "$(echo $RESPONSE | jq -r '.access_token')" > token.txt
+          echo "$(echo $RESPONSE | jq -r '.access_token')" > token.txt
           
   build:
     name: 'Build repo'

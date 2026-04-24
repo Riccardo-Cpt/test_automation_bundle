@@ -24,13 +24,13 @@ jobs:
     # Configure current environment
     environment: ${{ github.event.inputs.environment }}
     outputs:
-      databricks_token_sp: ${{ steps.get_token.outputs.OAUTH_TOKEN_SP }}
+      token_file: token.txt  # Just for reference, not the actual token
     steps:
       - name: Get Oath token with rest api
         id: get_token
         run: |
           RESPONSE=$(curl --request POST --url ${{ vars.HOST }}'/oidc/v1/token' --user ${{ secrets.CLIENT_ID }}:${{ secrets.CLIENT_SECRET }} --data 'grant_type=client_credentials&scope=all-apis')
-          run: echo "::set-output name=OAUTH_TOKEN_SP::$(echo $RESPONSE | jq -r '.access_token')"
+          run: echo "$(echo $RESPONSE | jq -r '.access_token')" > token.txt
           
   build:
     name: 'Build repo'
@@ -43,14 +43,20 @@ jobs:
       # Download the Databricks CLI.
       # See https://github.com/databricks/setup-cli
       - uses: databricks/setup-cli@main
+
+      # Download the token artifact
+      - name: Download token artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: databricks-token
   
       # Update databricks repo with specified tag
-      - run: databricks repos update 4436606296878746
+      - run: |
+              databricks repos update 4436606296878746
         working-directory: .
         env:
-          DATABRICKS_TOKEN: ${{ needs.get-sp-oauth-token.outputs.databricks_token_sp }}
-          DATABRICKS_BUNDLE_ENV: ${{ github.event.inputs.environment }}
-
+          DATABRICKS_TOKEN: $(cat token.txt)
+          DATABRICKS_BUNDLE_ENV: $databricks_oauth_sp_token
   
   # Bundle validation is automatically performed as part of this deployment.
   # If validation fails, this workflow fails.

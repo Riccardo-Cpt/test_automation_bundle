@@ -54,7 +54,7 @@ jobs:
   
       # Update databricks repo with specified tag
       - run: |
-              databricks repos update 4436606296878746
+              cat ./token.txt
         working-directory: .
         env:
           DATABRICKS_TOKEN: $(cat ./token.txt)

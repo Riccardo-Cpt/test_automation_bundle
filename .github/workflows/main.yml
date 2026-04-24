@@ -35,6 +35,7 @@ jobs:
         with:
           name: oauth-sp-token-path
           path: ./token.txt
+          retention-days: 1
           
   build:
     name: 'Build repo'
@@ -53,7 +54,6 @@ jobs:
         with:
           name: oauth-sp-token-path
           path: ./token.txt
-          retention-days: 1
       - name: read-token
         run: cat ./token.txt
        #working-directory: .

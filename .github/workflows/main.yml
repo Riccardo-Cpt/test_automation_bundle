@@ -46,7 +46,7 @@ jobs:
 
       # Download the token artifact
       - name: Download token artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: databricks-token
   
